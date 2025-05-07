@@ -1,19 +1,20 @@
+import MovieCard from "@/components/MovieCard";
 import SearchBar from "@/components/searchBar";
 import { icons } from "@/constants/icons";
 import { images } from "@/constants/images";
 import { fetchMovie } from "@/services/api";
 import useFetch from "@/services/useFetch";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import {
   ActivityIndicator,
   FlatList,
   Image,
+  LogBox,
   ScrollView,
   Text,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LogBox } from "react-native";
 
 LogBox.ignoreLogs([
   "VirtualizedLists should never be nested", // Silences this specific warning
@@ -63,9 +64,7 @@ export default function Index() {
 
                 <FlatList
                   data={movies}
-                  renderItem={({ item }) => (
-                    <Text className="text-white text-sm">{item.title}</Text>
-                  )}
+                  renderItem={({ item }) => <MovieCard {...item} />}
                   keyExtractor={(item) => item.id}
                   numColumns={3}
                   columnWrapperStyle={{
