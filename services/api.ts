@@ -27,7 +27,6 @@ export const fetchMovie = async ({ query }: { query: string }) => {
   }
   
   const data = await response.json();
-  console.log(`--------Data${data.results}`);
 
   return data.results;
 };

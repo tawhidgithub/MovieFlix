@@ -5,6 +5,7 @@ import { images } from "@/constants/images";
 import { fetchMovie } from "@/services/api";
 import { updateSearchCount } from "@/services/appWrith";
 import useFetch from "@/services/useFetch";
+import { Query } from "appwrite";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -32,15 +33,20 @@ const Search = () => {
       if (searchQuery.trim()) {
         await loadMovie();
 
-        if (movies && movies[0]) {
-          updateSearchCount(searchQuery, movies[0]);
-        }
+        // console.log(`search Query :${searchQuery}`);
+        // console.log(`Movie Length :${movies.length}`);
       } else {
         reset();
       }
-    }, 500);
+    }, 800);
     return () => clearTimeout(timeOutId);
   }, [searchQuery]);
+
+  useEffect(() => {
+    if (Array.isArray(movies) && movies.length > 0 && movies?.[0]) {
+      updateSearchCount(searchQuery, movies[0]);
+    }
+  }, [movies]);
 
   return (
     <View className=" flex-1 bg-primary">
