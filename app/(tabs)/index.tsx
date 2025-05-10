@@ -38,76 +38,74 @@ export default function Index() {
   } = useFetch(() => fetchMovie({ query: "" }));
 
   return (
-    <SafeAreaView className="flex-1  ">
-      <View className="flex-1 bg-primary">
-        <Image source={images.bg} className="absolute w-full  z-0" />
+    <View className="flex-1 bg-primary">
+      <Image source={images.bg} className="absolute w-full  z-0" />
 
-        <ScrollView
-          className="flex-1 px-5 "
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{
-            minHeight: "100%",
-            paddingBottom: 10,
-          }}
-        >
-          <Image source={icons.logo} className="w-12 h-10 mt-9 mx-auto" />
+      <ScrollView
+        className="flex-1 px-5 "
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{
+          minHeight: "100%",
+          paddingBottom: 10,
+        }}
+      >
+        <Image source={icons.logo} className="w-12 h-10 mt-9 mx-auto" />
 
-          {moviesLoading || trendingLoading ? (
-            <ActivityIndicator
-              size="large"
-              color="#0000ff"
-              className="mt-10 self-center"
+        {moviesLoading || trendingLoading ? (
+          <ActivityIndicator
+            size="large"
+            color="#0000ff"
+            className="mt-10 self-center"
+          />
+        ) : moviesError || trendingError ? (
+          <Text>Error :{moviesError?.message || trendingError?.message}</Text>
+        ) : (
+          <View className="flex-1 mt-5">
+            <SearchBar
+              placeHolder="Search"
+              onPress={() => router.push("/search")}
             />
-          ) : moviesError || trendingError ? (
-            <Text>Error :{moviesError?.message || trendingError?.message}</Text>
-          ) : (
-            <View className="flex-1 mt-5">
-              <SearchBar
-                placeHolder="Search"
-                onPress={() => router.push("/search")}
-              />
-              {trendingMovie && (
-                <View className="mt-10">
-                  <Text className="text-lg text-white font-bold mb-3">
-                    Trending Movie
-                  </Text>
-                  <FlatList
-                    className="mb-4 mt-3"
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    ItemSeparatorComponent={() => <View className="w-4" />}
-                    data={trendingMovie}
-                    renderItem={({ item, index }) => (
-                      <TrendingCard movie={item} index={index} />
-                    )}
-                    keyExtractor={(item, index) => index.toString()}
-                  />
-                </View>
-              )}
-              <>
-                <Text className="text-lg font-bold text-white  mt-5 mb-3">
-                  Latest Movie
+            {trendingMovie && (
+              <View className="mt-10">
+                <Text className="text-lg text-white font-bold mb-3">
+                  Trending Movie
                 </Text>
-
                 <FlatList
-                  data={movies}
-                  renderItem={({ item }) => <MovieCard {...item} />}
-                  keyExtractor={(item) => item.id}
-                  numColumns={3}
-                  columnWrapperStyle={{
-                    justifyContent: "flex-start",
-                    gap: 20,
-                    paddingRight: 5,
-                    marginBottom: 10,
-                  }}
-                  className="mb-2 pb-32"
-                  scrollEnabled={false}
+                  className="mb-4 mt-3"
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  ItemSeparatorComponent={() => <View className="w-4" />}
+                  data={trendingMovie}
+                  renderItem={({ item, index }) => (
+                    <TrendingCard movie={item} index={index} />
+                  )}
+                  keyExtractor={(item, index) => index.toString()}
                 />
-              </>
-            </View>
-          )}
-        </ScrollView>
-      </View>
-    </SafeAreaView>
+              </View>
+            )}
+            <>
+              <Text className="text-lg font-bold text-white  mt-5 mb-3">
+                Latest Movie
+              </Text>
+
+              <FlatList
+                data={movies}
+                renderItem={({ item }) => <MovieCard {...item} />}
+                keyExtractor={(item) => item.id}
+                numColumns={3}
+                columnWrapperStyle={{
+                  justifyContent: "flex-start",
+                  gap: 20,
+                  paddingRight: 5,
+                  marginBottom: 10,
+                }}
+                className="mb-2 pb-32"
+                scrollEnabled={false}
+              />
+            </>
+          </View>
+        )}
+      </ScrollView>
+    </View>
   );
 }
