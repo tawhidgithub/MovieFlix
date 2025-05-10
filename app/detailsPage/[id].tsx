@@ -4,6 +4,7 @@ import { useLocalSearchParams, useSearchParams } from "expo-router/build/hooks";
 import useFetch from "@/services/useFetch";
 import { fetchMovieDetails } from "@/services/api";
 import { icons } from "@/constants/icons";
+import { router } from "expo-router";
 
 interface MovieInfoProps {
   label: string;
@@ -87,8 +88,13 @@ const Details = () => {
           />
         </View>
       </ScrollView>
-      <TouchableOpacity className="
-       bottom-5 left-0 right-0 mx-5 bg-accent rounded-lg py-3.5 flex flex-row items-center justify-center z-50">
+      <TouchableOpacity
+        className="
+       bottom-5 left-0 right-0 mx-5 bg-accent rounded-lg py-3.5 flex flex-row items-center justify-center z-50"
+        onPress={() => {
+          router.back();
+        }}
+      >
         <Image
           source={icons.arrow}
           className="size-5 mr-1 mt-0.5 rotate-180 "
