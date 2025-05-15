@@ -1,16 +1,10 @@
 import { Result } from "@/Model/movieItemModel";
-import { Client, Databases, ID, Query } from "appwrite";
+import { account, COLLECTION_ID, COLLECTION_SAVE_MOVIE_ID, database, DATABASE_ID } from "@/config/appWriteConfig";
+import { ID, Query } from 'appwrite';
 
-const DATABASE_ID = process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!;
-const COLLECTION_ID = process.env.EXPO_PUBLIC_APPWRITE_COLLECTION_ID!;
-const COLLECTION_SAVE_MOVIE_ID =
-  process.env.EXPO_PUBLIC_APPWRITE_SAVE_MOVIE_COLLECTION_ID!;
 
-const client = new Client()
-  .setEndpoint("https://cloud.appwrite.io/v1")
-  .setProject(process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID!);
 
-const database = new Databases(client);
+
 /// update the metrice data base
 export const updateSearchCount = async (query: string, movie: Result) => {
   try {
@@ -99,3 +93,40 @@ export const getTheSaveMovie = async () => {
     throw error;
   }
 };
+
+
+export const singUp=async (email:string,password:any,name:string)=>{
+
+try {
+  // create account in appwrite
+
+return await account.create('unick()',email,password,name)
+
+
+
+} catch (error) {
+  console.log(error);
+  throw error
+  
+}
+
+}
+
+export const loginToaccount=async (email:string,password:any)=>{
+try {
+  
+const session = await account.createEmailPasswordSession(email,password);
+
+ 
+
+
+
+} catch (error) {
+  console.log(error);
+  throw error;
+  
+}
+
+
+}
+

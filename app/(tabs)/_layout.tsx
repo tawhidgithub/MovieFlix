@@ -55,7 +55,7 @@ const _layout = () => {
         },
       }}
     >
-      {/* <Tabs.Screen
+      <Tabs.Screen
         name="index"
         options={{
           headerShown: false,
@@ -90,7 +90,7 @@ const _layout = () => {
             </>
           ),
         }}
-      /> */}
+      />
       <Tabs.Screen
         name="profile"
         options={{

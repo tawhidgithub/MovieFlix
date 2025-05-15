@@ -1,9 +1,11 @@
 import ProfileCard from "@/components/profileCard";
+import { useRouter } from "expo-router";
 import React from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const profile = () => {
+const Profile = () => {
+  const router= useRouter()
   return (
     <SafeAreaView className="flex-1 bg-primary">
       <ScrollView className="bg-primary px-5 ">
@@ -23,16 +25,22 @@ const profile = () => {
         </View>
         {/* Body Part */}
         <View className="mt-0">
-          <ProfileCard title={"Email"} onClick={() => {}} />
-          <ProfileCard title={"UserName"} onClick={() => {}} />
+          <ProfileCard title={"Email"} onClick={() => {
+
+
+
+          }} />
+          <ProfileCard title={"UserName"} onClick={() => router.push(`/loginScreen`)} />
           <ProfileCard title={"Privacy"} onClick={() => {}} />
           <ProfileCard title={"Settings"} onClick={() => {}} />
+          <ProfileCard title={"Logout"} onClick={() => {}} />
+
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default profile;
+export default Profile;
 
 const styles = StyleSheet.create({});
