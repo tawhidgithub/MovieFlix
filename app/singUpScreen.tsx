@@ -1,12 +1,77 @@
-import React from 'react'
-import { Text, View } from 'react-native'
+import CustomButton from "@/components/customButton";
+import TextField from "@/components/textField";
+import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { ScrollView, Text, View } from "react-native";
 
-const SingUpScreen = () => {
+export default function SingUpScreen() {
+  const [pass, setPass] = useState<any | null>();
+  const [confirmPass, setConfirmPass] = useState<any | null>();
+  const [validPass, setValidPass] = useState<boolean | null>();
+  const [passwordMessage, setPasswordMessage] = useState<string | null>();
+
+  useEffect(() => {
+    if (!pass && !confirmPass) {
+      setPasswordMessage("❌ both Field are required"), setValidPass(false);
+    } else if (pass === confirmPass) {
+      setValidPass(true);
+      setPasswordMessage("");
+    } else {
+      setValidPass(false), setPasswordMessage("❌ Passwords do not match");
+    }
+  }, [confirmPass]);
+
+  const route = useRouter();
+
   return (
-    <View>
-      <Text>singUpScreen</Text>
-    </View>
-  )
-}
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="bg-primary">
+      <View className="flex-1 items-center px-5 mt-32">
+        <View className="flex items-start w-full mb-32 mt-10">
+          <Text className="text-white text-6xl font-bold leading-relaxed">
+            Registration
+          </Text>
+          <Text className="text-white text-lg font-normal mt-2 tracking-[1px]">
+            SignUp with your Email
+          </Text>
+          <Text className="text-white text-lg font-normal tracking-[0.5px]">
+            {"if already have a  account! "}
+            <Text
+              className="underline text-accent"
+              onPress={() => route.push("/loginScreen")}
+            >
+              Login
+            </Text>
+          </Text>
+        </View>
+        <View className="w-full gap-6">
+          <TextField placeHolder={"Email"} />
+          <TextField
+            placeHolder={"Password"}
+            passwordField
+            value={pass}
+            onChangeText={(value) => setPass(value)}
+          />
+          <TextField
+            placeHolder={"Confirm Password"}
+            passwordField
+            value={confirmPass}
+            onChangeText={(value) => setConfirmPass(value)}
+          />
+        </View>
+        <View className="w-full mt-4 px-4">
+          <Text className="text-sm text-red-800">{passwordMessage}</Text>
+        </View>
 
-export default SingUpScreen
+        <View className=" w-full mt-32">
+          <CustomButton
+            btnTitle={"Registration"}
+            disabled={validPass? false: true }
+            onClick={() => {
+              console.log("Registration button press");
+            }}
+          />
+        </View>
+      </View>
+    </ScrollView>
+  );
+}
