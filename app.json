@@ -4,7 +4,7 @@
     "slug": "jsm_rn_movie_app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.png",
+    "icon": "./assets/images/icon.png",
     "scheme": "jsmrnmovieapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -29,9 +29,9 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/logo.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
+          "image": "",
+          "imageWidth": 100,
+          "resizeMode": "cover",
           "backgroundColor": "#ffffff"
         }
       ]

@@ -1,26 +1,22 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "react-native";
+
 import "./globals.css";
+
 export default function RootLayout() {
-  return (
+
+return (
     <>
       <StatusBar hidden />
 
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="detailsPage/[id]"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="loginScreen"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="singUpScreen"
-          options={{ headerShown: false }}
-        />
+      <Stack  >
+
+
+<Stack.Screen name="(protected)" options={{headerShown:false}} />
+<Stack.Screen name="loginScreen" options={{headerShown:false}} />
       </Stack>
+        
+      
     </>
   );
 }

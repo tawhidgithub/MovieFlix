@@ -1,30 +1,67 @@
 import CustomButton from "@/components/customButton";
 import TextField from "@/components/textField";
+import { SingUp } from "@/services/appWrith";
+import useFetch from "@/services/useFetch";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
+import { Text, View } from "react-native";
 
 export default function SingUpScreen() {
-  const [pass, setPass] = useState<any | null>();
+  const [pass, setPass] = useState<string>();
+  const [email, setEmail] = useState<string>();
+  const [name, setName] = useState<string>();
+  const [signUpError, setSignUpError] = useState<string>();
   const [confirmPass, setConfirmPass] = useState<any | null>();
   const [validPass, setValidPass] = useState<boolean | null>();
   const [passwordMessage, setPasswordMessage] = useState<string | null>();
+  const {
+    data,
+    loading: signUpLoading,
+    reFetch,
+    error: signUpErrorMessage,
+  } = useFetch(
+    () => SingUp({ Email: email!, Password: pass, Name: name }),
+    false
+  );
 
   useEffect(() => {
-    if (!pass && !confirmPass) {
-      setPasswordMessage("❌ both Field are required"), setValidPass(false);
+    if (!pass || !confirmPass) {
+      // setPasswordMessage("❌ both Field are required"),
+      setValidPass(false);
     } else if (pass === confirmPass) {
-      setValidPass(true);
-      setPasswordMessage("");
+      if (!email) {
+        setPasswordMessage("❌ Email is Required");
+        setValidPass(false);
+      } else {
+        setValidPass(true);
+        setPasswordMessage("");
+      }
     } else {
-      setValidPass(false), setPasswordMessage("❌ Passwords do not match");
+      setValidPass(false);
+      setPasswordMessage("❌ Passwords do not match");
     }
-  }, [confirmPass]);
+  }, [confirmPass, email, pass]);
+
+  useEffect(() => {
+    if (signUpErrorMessage) {
+      setSignUpError(signUpErrorMessage.message);
+    } else {
+      setSignUpError("");
+    }
+  }, [signUpErrorMessage]);
 
   const route = useRouter();
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="bg-primary">
+    <KeyboardAwareScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      className="bg-primary"
+      keyboardShouldPersistTaps="handled"
+      enableOnAndroid={true}
+      extraScrollHeight={20}
+    >
       <View className="flex-1 items-center px-5 mt-32">
         <View className="flex items-start w-full mb-32 mt-10">
           <Text className="text-white text-6xl font-bold leading-relaxed">
@@ -44,7 +81,21 @@ export default function SingUpScreen() {
           </Text>
         </View>
         <View className="w-full gap-6">
-          <TextField placeHolder={"Email"} />
+          <TextField
+            placeHolder={"Name"}
+            value={name}
+            onChangeText={(value) => setName(value)}
+          />
+          <TextField
+            placeHolder={"Email"}
+            value={email}
+            onChangeText={(value) => setEmail(value)}
+          />
+          {signUpError && (
+            <View className="w-full  px-4">
+              <Text className="text-sm text-red-800">{signUpError}</Text>
+            </View>
+          )}
           <TextField
             placeHolder={"Password"}
             passwordField
@@ -64,14 +115,28 @@ export default function SingUpScreen() {
 
         <View className=" w-full mt-32">
           <CustomButton
+            loading={signUpLoading}
             btnTitle={"Registration"}
-            disabled={validPass? false: true }
+            disabled={validPass ? false : true}
             onClick={() => {
+              reFetch();
+              if (signUpErrorMessage) {
+                setSignUpError(signUpErrorMessage.message);
+                console.log(`Error${signUpError}`);
+              } else {
+                setSignUpError("");
+                route.push("/loginScreen");
+
+                console.log("Registration in app");
+              }
+
+              console.log(data);
+              console.log(email);
               console.log("Registration button press");
             }}
           />
         </View>
       </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }

@@ -1,4 +1,5 @@
 import ProfileCard from "@/components/profileCard";
+import { getLoginSession } from "@/services/databaseStorage";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -31,7 +32,9 @@ const Profile = () => {
 
           }} />
           <ProfileCard title={"UserName"} onClick={() => router.push(`/loginScreen`)} />
-          <ProfileCard title={"Privacy"} onClick={() => {}} />
+          <ProfileCard title={"Privacy"} onClick={() => {
+            getLoginSession();
+          }} />
           <ProfileCard title={"Settings"} onClick={() => {}} />
           <ProfileCard title={"Logout"} onClick={() => {}} />
 

@@ -38,9 +38,7 @@ export const updateSearchCount = async (query: string, movie: Result) => {
   }
 };
 // get the metrice database data
-export const getTrendingMovies = async (): Promise<
-  TrendingMovie[] | undefined
-> => {
+export const getTrendingMovies = async (): Promise<TrendingMovie[] | undefined> => {
   try {
     const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
       Query.limit(5),
@@ -94,13 +92,17 @@ export const getTheSaveMovie = async () => {
   }
 };
 
+interface signUpProps{
+Email:string,Password:any,Name:any
 
-export const singUp=async (email:string,password:any,name:string)=>{
+
+}
+export const SingUp=async ({Email,Password,Name}:signUpProps)=>{
 
 try {
   // create account in appwrite
 
-return await account.create('unick()',email,password,name)
+return await account.create(ID.unique(),Email,Password,Name)
 
 
 
@@ -112,13 +114,35 @@ return await account.create('unick()',email,password,name)
 
 }
 
-export const loginToaccount=async (email:string,password:any)=>{
+interface loginToAccountProps{
+
+Email:string,
+Password:any
+
+}
+
+export const loginToAccount=async ({Email,Password}:loginToAccountProps)=>{
 try {
   
-const session = await account.createEmailPasswordSession(email,password);
+return await account.createEmailPasswordSession(Email,Password);
 
  
 
+
+} catch (error) {
+  console.log(error);
+  throw error;
+  
+}
+
+
+}
+export const logOutToAccount=async ()=>{
+try {
+  
+return await account.deleteSession('current');
+
+ 
 
 
 } catch (error) {
