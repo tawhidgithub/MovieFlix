@@ -1,6 +1,7 @@
 import { Result } from "@/Model/movieItemModel";
-import { account, COLLECTION_ID, COLLECTION_SAVE_MOVIE_ID, database, DATABASE_ID } from "@/config/appWriteConfig";
-import { ID, Query } from 'appwrite';
+import { account, COLLECTION_ID, COLLECTION_SAVE_MOVIE_ID, COLLECTION_USER_ID, database, DATABASE_ID } from "@/config/appWriteConfig";
+import { ID, Permission, Query, Role } from 'appwrite';
+import { deleteLoginSession, saveLoginSession, saveUserData } from "./databaseStorage";
 
 
 
@@ -51,7 +52,7 @@ export const getTrendingMovies = async (): Promise<TrendingMovie[] | undefined> 
     return undefined;
   }
 };
-
+// save the movie in Database
 export const saveTheMovie = async (movie: MovieDetails) => {
   try {
     console.log(`Image path =>:https://image.tmdb.org/t/p/w500${movie.poster_path}`);
@@ -76,6 +77,7 @@ export const saveTheMovie = async (movie: MovieDetails) => {
     throw error;
   }
 };
+// get the saved movie from Database 
 export const getTheSaveMovie = async () => {
   try {
     const result = await database.listDocuments(
@@ -91,7 +93,7 @@ export const getTheSaveMovie = async () => {
     throw error;
   }
 };
-
+// Registration type or props type
 interface signUpProps{
 Email:string,Password:any,Name:any
 
@@ -102,7 +104,18 @@ export const SingUp=async ({Email,Password,Name}:signUpProps)=>{
 try {
   // create account in appwrite
 
-return await account.create(ID.unique(),Email,Password,Name)
+ const user = await account.create(ID.unique(),Email,Password,Name)
+
+ await database.createDocument(DATABASE_ID,COLLECTION_USER_ID,user.$id,{
+name:Name,
+email:Email
+
+ }).then(()=>{
+
+   console.log(`User Data have been save to AppWrite Database `);
+
+ })
+     Permission.read(Role.user(user.$id)), Permission.write(Role.user(user.$id))
 
 
 
@@ -113,6 +126,7 @@ return await account.create(ID.unique(),Email,Password,Name)
 }
 
 }
+// Login type or props type
 
 interface loginToAccountProps{
 
@@ -120,11 +134,29 @@ Email:string,
 Password:any
 
 }
-
+/// Login to Account 
 export const loginToAccount=async ({Email,Password}:loginToAccountProps)=>{
 try {
   
-return await account.createEmailPasswordSession(Email,Password);
+
+
+
+
+
+ const  user = await account.createEmailPasswordSession(Email,Password);
+ console.log(`---Session data${JSON.stringify(user)}`);
+
+ saveLoginSession(user)
+ 
+
+
+
+ const userData= await database.getDocument(DATABASE_ID,COLLECTION_USER_ID,user.userId)
+ console.log(`User Data :-${JSON.stringify(userData)}`);
+ 
+ saveUserData({name:userData.name,email:userData.email})
+
+
 
  
 
@@ -137,9 +169,12 @@ return await account.createEmailPasswordSession(Email,Password);
 
 
 }
-export const logOutToAccount=async ()=>{
+/// LogOut from Account
+export const logOutFromAccount=async ()=>{
 try {
   
+
+  deleteLoginSession();
 return await account.deleteSession('current');
 
  

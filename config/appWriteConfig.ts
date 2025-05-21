@@ -7,6 +7,8 @@ export const DATABASE_ID = process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!;
 export const COLLECTION_ID = process.env.EXPO_PUBLIC_APPWRITE_COLLECTION_ID!;
  export const COLLECTION_SAVE_MOVIE_ID =
   process.env.EXPO_PUBLIC_APPWRITE_SAVE_MOVIE_COLLECTION_ID!;
+ export const COLLECTION_USER_ID =
+  process.env.EXPO_PUBLIC_APPWRITE_SAVE_MOVIE_USER_ID!;
 
 export const client = new Client()
   .setEndpoint("https://cloud.appwrite.io/v1")

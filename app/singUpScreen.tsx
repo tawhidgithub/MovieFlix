@@ -124,15 +124,17 @@ export default function SingUpScreen() {
                 setSignUpError(signUpErrorMessage.message);
                 console.log(`Error${signUpError}`);
               } else {
-                setSignUpError("");
-                route.push("/loginScreen");
 
-                console.log("Registration in app");
+                if(!signUpLoading){
+ setSignUpError("");
+                route.push("/loginScreen");
+                }
+               
+
               }
 
-              console.log(data);
-              console.log(email);
-              console.log("Registration button press");
+             
+              console.log("----Registration button press");
             }}
           />
         </View>

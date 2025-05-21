@@ -14,6 +14,7 @@ return (
 
 <Stack.Screen name="(protected)" options={{headerShown:false}} />
 <Stack.Screen name="loginScreen" options={{headerShown:false}} />
+<Stack.Screen name="singUpScreen" options={{headerShown:false}} />
       </Stack>
         
       

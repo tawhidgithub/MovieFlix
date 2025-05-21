@@ -1,6 +1,6 @@
 import CustomButton from "@/components/customButton";
 import TextField from "@/components/textField";
-import { loginToAccount, logOutToAccount } from "@/services/appWrith";
+import { loginToAccount, logOutFromAccount } from "@/services/appWrith";
 import { saveLoginSession } from "@/services/databaseStorage";
 import useFetch from "@/services/useFetch";
 import { useRouter } from "expo-router";
@@ -18,12 +18,14 @@ export default function LoginScreen() {
     reFetch,
     error: loginError,
   } = useFetch(() => loginToAccount({ Email: email, Password: pass }), false);
-  const {
+    const {
     data: logoutData,
     loading: logoutLoading,
-    reFetch: logoutreFetch,
+    reFetch: logoutReFetch,
     error: logoutError,
-  } = useFetch(() => logOutToAccount(), false);
+  } = useFetch(() => logOutFromAccount(), false);
+
+
 
   const route = useRouter();
 
@@ -33,7 +35,6 @@ export default function LoginScreen() {
       route.replace("/(protected)/(tabs)");
     }
 console.log("Login Data =>", JSON.stringify(loginData, null, 2));
-console.log("Login Data =>", JSON.stringify(logoutData, null, 2));
 
   },[loginData]);
 
@@ -83,7 +84,7 @@ console.log("Login Data =>", JSON.stringify(logoutData, null, 2));
             btnTitle={"Login"}
             onClick={() => {
               reFetch();
-              // logoutreFetch()
+              // logoutReFetch()
             }}
           />
         </View>

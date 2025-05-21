@@ -83,3 +83,8 @@ release_data:string,
 rating:string,
 saved:boolean
 }
+
+interface userProps{
+  name:string,
+  email:string
+}
