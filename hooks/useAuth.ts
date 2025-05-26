@@ -1,11 +1,12 @@
 import { getLoginSession } from "@/services/databaseStorage";
 import { useEffect, useState } from "react";
 
+
+
 export default function useAuth() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
-  useEffect(() => {
-    const checkLogin = async () => {
+ const checkLogin = async () => {
       try {
         const session = await getLoginSession();
         console.log("Login Sessions:", session);
@@ -25,8 +26,14 @@ export default function useAuth() {
       }
     };
 
+  useEffect(() => {
+
+
     checkLogin();
   }, []);
+
+
+
 
   useEffect(() => {
     console.log("Auth state changed to:", isLoggedIn);

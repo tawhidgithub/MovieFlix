@@ -1,10 +1,14 @@
 import { Result } from "@/Model/movieItemModel";
-import { account, COLLECTION_ID, COLLECTION_SAVE_MOVIE_ID, COLLECTION_USER_ID, database, DATABASE_ID } from "@/config/appWriteConfig";
-import { ID, Permission, Query, Role } from 'appwrite';
+import {
+  account,
+  COLLECTION_ID,
+  COLLECTION_SAVE_MOVIE_ID,
+  COLLECTION_USER_ID,
+  database,
+  DATABASE_ID,
+} from "@/config/appWriteConfig";
+import { ID, Permission, Query, Role } from "appwrite";
 import { deleteLoginSession, saveLoginSession, saveUserData } from "./databaseStorage";
-
-
-
 
 /// update the metrice data base
 export const updateSearchCount = async (query: string, movie: Result) => {
@@ -39,7 +43,9 @@ export const updateSearchCount = async (query: string, movie: Result) => {
   }
 };
 // get the metrice database data
-export const getTrendingMovies = async (): Promise<TrendingMovie[] | undefined> => {
+export const getTrendingMovies = async (): Promise<
+  TrendingMovie[] | undefined
+> => {
   try {
     const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
       Query.limit(5),
@@ -55,19 +61,21 @@ export const getTrendingMovies = async (): Promise<TrendingMovie[] | undefined> 
 // save the movie in Database
 export const saveTheMovie = async (movie: MovieDetails) => {
   try {
-    console.log(`Image path =>:https://image.tmdb.org/t/p/w500${movie.poster_path}`);
-    
+    console.log(
+      `Image path =>:https://image.tmdb.org/t/p/w500${movie.poster_path}`
+    );
+
     const result = await database.createDocument(
       DATABASE_ID,
       COLLECTION_SAVE_MOVIE_ID,
-              ID.unique(),
-            {
+      ID.unique(),
+      {
         title: movie.title!,
         poster_path: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
         type: "Movie",
         rating: movie.vote_average ? `${movie.vote_average / 2}` : "N/A",
         release_year: movie.release_date?.toString().split("-")[0]!,
-        saved:true,
+        saved: true,
       }
     );
 
@@ -77,7 +85,7 @@ export const saveTheMovie = async (movie: MovieDetails) => {
     throw error;
   }
 };
-// get the saved movie from Database 
+// get the saved movie from Database
 export const getTheSaveMovie = async () => {
   try {
     const result = await database.listDocuments(
@@ -94,98 +102,75 @@ export const getTheSaveMovie = async () => {
   }
 };
 // Registration type or props type
-interface signUpProps{
-Email:string,Password:any,Name:any
-
-
+export interface signUpProps {
+  Email: string;
+  Password: any;
+  Name: any;
 }
-export const SingUp=async ({Email,Password,Name}:signUpProps)=>{
+export const SingUp = async ({ Email, Password, Name }: signUpProps) => {
+  try {
+    // create account in appwrite
 
-try {
-  // create account in appwrite
+    const user = await account.create(ID.unique(), Email, Password, Name);
 
- const user = await account.create(ID.unique(),Email,Password,Name)
-
- await database.createDocument(DATABASE_ID,COLLECTION_USER_ID,user.$id,{
-name:Name,
-email:Email
-
- }).then(()=>{
-
-   console.log(`User Data have been save to AppWrite Database `);
-
- })
-     Permission.read(Role.user(user.$id)), Permission.write(Role.user(user.$id))
-
-
-
-} catch (error) {
-  console.log(error);
-  throw error
-  
-}
-
-}
+    await database
+      .createDocument(DATABASE_ID, COLLECTION_USER_ID, user.$id, {
+        name: Name,
+        email: Email,
+      })
+      .then(() => {
+        console.log(`User Data have been save to AppWrite Database `);
+      });
+    // eslint-disable-next-line no-unused-expressions
+    Permission.read(Role.user(user.$id)), Permission.write(Role.user(user.$id));
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 // Login type or props type
 
-interface loginToAccountProps{
-
-Email:string,
-Password:any
-
+interface loginToAccountProps {
+  Email: string;
+  Password: any;
 }
-/// Login to Account 
-export const loginToAccount=async ({Email,Password}:loginToAccountProps)=>{
-try {
-  
+/// Login to Account
+export const loginToAccount = async ({
+  Email,
+  Password,
+}: loginToAccountProps) => {
+  try {
+    const user = await account.createEmailPasswordSession(Email, Password);
+    console.log(`---Session data${JSON.stringify(user)}`);
+    if(user != null && user != undefined){
+
+      await saveLoginSession(user)
+
+    }
 
 
+    const userData = await database.getDocument(
+      DATABASE_ID,
+      COLLECTION_USER_ID,
+      user.userId
+    );
+    console.log(`User Data :-${JSON.stringify(userData)}`);
 
+    saveUserData({ name: JSON.stringify(userData.name), email: JSON.stringify(userData.email) });
 
-
- const  user = await account.createEmailPasswordSession(Email,Password);
- console.log(`---Session data${JSON.stringify(user)}`);
-
- saveLoginSession(user)
- 
-
-
-
- const userData= await database.getDocument(DATABASE_ID,COLLECTION_USER_ID,user.userId)
- console.log(`User Data :-${JSON.stringify(userData)}`);
- 
- saveUserData({name:userData.name,email:userData.email})
-
-
-
- 
-
-
-} catch (error) {
-  console.log(error);
-  throw error;
-  
-}
-
-
-}
+    return userData;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 /// LogOut from Account
-export const logOutFromAccount=async ()=>{
-try {
-  
-
-  deleteLoginSession();
-return await account.deleteSession('current');
-
- 
-
-
-} catch (error) {
-  console.log(error);
-  throw error;
-  
-}
-
-
-}
-
+export const logOutFromAccount = async () => {
+  try {
+    deleteLoginSession();
+    return await account.deleteSession("current");
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

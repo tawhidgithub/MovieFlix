@@ -1,7 +1,36 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const saveLoginSession = async (session: any): Promise<void> => {
+export const saveLoginStatus = async (isLogin:boolean ): Promise<void> => {
   try {
+    await AsyncStorage.setItem("isLogin", JSON.stringify(isLogin));
+
+    console.log("Login Status Save was  Success in local Database");
+  } catch (error) {
+    console.log(`Save Login Status in saveLoginStatus Error :-${error}`);
+    throw error;
+  }
+};
+
+export const getLoginStatus = async (): Promise<getLoginSessionProps | null> => {
+    try {
+      const isLogin = await AsyncStorage.getItem("isLogin");
+
+      if (!isLogin) {
+        return null;
+      }
+
+      return JSON.parse(isLogin);
+    } catch (error) {
+      console.log(`get Login Status Error :-${error}`);
+      throw error;
+    }
+  };
+
+export const saveLoginSession = async ({session}:any): Promise<void> => {
+  try {
+    console.log(`Save Login Session Data ----=>----${JSON.stringify(session)}`);
+
+
     await AsyncStorage.setItem("session", JSON.stringify(session));
 
     console.log("Login Data Save was  Success in local Database");
@@ -13,34 +42,8 @@ export const saveLoginSession = async (session: any): Promise<void> => {
 
 type getLoginSessionProps = {
   id: string;
-  createdAt: string;
-  updatedAt: string;
   userId: string;
-  expire: string;
-  provider: string;
-  providerUid: string;
-  providerAccessToken: string;
-  providerAccessTokenExpiry: string;
-  providerRefreshToken: string;
-  ip: string;
-  osCode: string;
-  osName: string;
-  osVersion: string;
-  clientType: string;
-  clientCode: string;
-  clientName: string;
-  clientVersion: string;
-  clientEngine: string;
-  clientEngineVersion: string;
-  deviceName: string;
-  deviceBrand: string;
-  deviceModel: string;
-  countryCode: string;
-  countryName: string;
-  current: boolean;
-  factors: ["password"];
-  secret: string;
-  mfaUpdatedAt: string;
+ 
 };
 
 export const getLoginSession = async (): Promise<getLoginSessionProps | null> => {

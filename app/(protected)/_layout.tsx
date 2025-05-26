@@ -1,9 +1,19 @@
 import { Redirect, Stack } from "expo-router";
 
-import useAuth from "@/hooks/useAuth";
+import { checkIsLogin } from "@/store/authSlice";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store/store";
 
 export default function ProtectedLayout() {
-  const isLoggedIn = useAuth();
+  const dispatch = useDispatch<AppDispatch>()
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+
+  useEffect(()=>{
+dispatch(checkIsLogin())
+
+
+  },[dispatch])
    if (isLoggedIn === null) {
     // Optional: return a splash screen or loader
     return null;
@@ -20,14 +30,12 @@ export default function ProtectedLayout() {
 
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="loginScreen" options={{ headerShown: false }} />
 
         <Stack.Screen
           name="detailsPage/[id]"
           options={{ headerShown: false }}
         />
 
-        <Stack.Screen name="singUpScreen" options={{ headerShown: false }} />
       </Stack>
   );
 }

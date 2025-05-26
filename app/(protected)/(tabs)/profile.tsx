@@ -1,31 +1,30 @@
 import ProfileCard from "@/components/profileCard";
-import { logOutFromAccount } from "@/services/appWrith";
-import { getUserData } from "@/services/databaseStorage";
-import useFetch from "@/services/useFetch";
+import { logout } from "@/store/authSlice";
+import { AppDispatch, RootState } from "@/store/store";
+import { getUserDetails } from "@/store/userSlice";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import { ActivityIndicator, Image, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch, useSelector } from "react-redux";
 
 const Profile = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { logoutLoading,logoutError } = useSelector(
+    (state: RootState) => state.auth
+  );
+  const {userDetails,userDetailsLoading,userDetailsError}=useSelector((state:RootState)=>state.user)
   const router = useRouter();
-  const {
-    data: userData,
-    loading: userLoading,
-    reFetch: userReFetch,
-    error: userError,
-  } = useFetch<userProps|null>(() => getUserData() );
-  const {
-    data: logoutData,
-    loading: logoutLoading,
-    reFetch: logoutReFetch,
-    error: logoutError,
-  } = useFetch(() => logOutFromAccount(), false);
+
+useEffect(()=>{
+
+dispatch(getUserDetails())
+
+},[])
   return (
     <SafeAreaView className="flex-1 bg-primary">
-      {userLoading ? (
+      {userDetailsLoading ? (
         <View className="flex-1 justify-center  items-center">
-          
           <ActivityIndicator size="large" className="text-white " />
         </View>
       ) : (
@@ -40,10 +39,10 @@ const Profile = () => {
               }}
             />
             <Text className="text-white text-xl font-bold">
-              {userData?.name ?? "Unnamed"}
+              {userDetails?.name ?? "Unnamed"}
             </Text>
             <Text className="text-white text-2xl font-normal">
-              {userData?.email ?? "No Email"}
+              {userDetails?.email ?? "No Email"}
             </Text>
           </View>
           {/* Body Part */}
@@ -53,15 +52,12 @@ const Profile = () => {
               title={"UserName"}
               onClick={() => router.push("/loginScreen")}
             />
-            <ProfileCard
-              title={"Privacy"}
-              onClick={() => {              }}
-            />
+            <ProfileCard title={"Privacy"} onClick={() => {}} />
             <ProfileCard title={"Settings"} onClick={() => {}} />
             <ProfileCard
               title={"Logout"}
               onClick={() => {
-                logoutReFetch();
+                dispatch(logout());
                 router.replace("/loginScreen");
               }}
             />
@@ -73,4 +69,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
