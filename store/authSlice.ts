@@ -11,6 +11,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 interface AuthState {
   isLoggedIn: boolean;
+  checkIsLoginIsLoading: boolean;
+  checkIsLoginError: string | null;
 
   loginLoading: boolean;
   loginError: string | null;
@@ -24,6 +26,8 @@ interface AuthState {
 
 const initialState: AuthState = {
   isLoggedIn: false,
+  checkIsLoginIsLoading: false,
+  checkIsLoginError: null,
 
   loginLoading: false,
   loginError: null,
@@ -83,8 +87,11 @@ export const checkIsLogin = createAsyncThunk("auth/checkIsLogin", async () => {
   const session = await getLoginSession();
   console.log("Session in checkIsLogin thunk:", session);
 
-  return !!session?.userId
+  const isLogin = !!session?.userId;
 
+  console.log(`---------checkIsLogin-------isLogin=> ${isLogin}`);
+
+  return isLogin;
 });
 const authSlice = createSlice({
   name: "auth",
@@ -124,7 +131,17 @@ const authSlice = createSlice({
             action.error.message || "Registration failed ");
       })
       .addCase(checkIsLogin.fulfilled, (state, action) => {
+        state.checkIsLoginIsLoading = false;
         state.isLoggedIn = action.payload;
+        console.log(`is Login----------authSlice-------- ${state.isLoggedIn} `);
+      })
+      .addCase(checkIsLogin.pending, (state) => {
+        state.checkIsLoginIsLoading = true;
+      })
+      .addCase(checkIsLogin.rejected, (state, action) => {
+        // eslint-disable-next-line no-unused-expressions
+        (state.checkIsLoginIsLoading = true),
+          (state.checkIsLoginError = action.error.message || "can't login is");
       });
   },
 });

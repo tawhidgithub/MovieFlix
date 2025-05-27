@@ -1,6 +1,6 @@
 import CustomButton from "@/components/customButton";
 import TextField from "@/components/textField";
-import { checkIsLogin, login } from "@/store/authSlice";
+import { login } from "@/store/authSlice";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
@@ -32,14 +32,12 @@ export default function LoginScreen() {
 
   const route = useRouter();
 
-    useEffect(() => {
-      if (isLoggedIn) {
-        route.replace("/(protected)/(tabs)");
-        console.log(`------------------isLogin ${isLoggedIn}`);
-        
-      }
-
-    },[dispatch]);
+  useEffect(() => {
+    if (isLoggedIn) {
+      route.replace("/(protected)/(tabs)");
+      console.log(`------------------isLogin ${isLoggedIn}`);
+    }
+  }, [dispatch]);
 
   return (
     <KeyboardAwareScrollView
@@ -86,14 +84,10 @@ export default function LoginScreen() {
             loading={loginLoading}
             btnTitle={"Login"}
             onClick={() => {
-              dispatch(login({ Email: email, Pass: pass })).then(()=>{
-
-
-                dispatch(checkIsLogin())
+              dispatch(login({ Email: email, Pass: pass })).then(() => {
+                route.replace("/(protected)/(tabs)")
               });
-// dispatch(logout())
-
-
+              // dispatch(logout())
             }}
           />
         </View>

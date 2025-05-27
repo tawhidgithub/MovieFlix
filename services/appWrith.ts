@@ -143,8 +143,9 @@ export const loginToAccount = async ({
     const user = await account.createEmailPasswordSession(Email, Password);
     console.log(`---Session data${JSON.stringify(user)}`);
     if(user != null && user != undefined){
+    console.log(`---Session------------ data${JSON.stringify(user)}`);
 
-      await saveLoginSession(user)
+       saveLoginSession(user)
 
     }
 
@@ -158,7 +159,7 @@ export const loginToAccount = async ({
 
     saveUserData({ name: JSON.stringify(userData.name), email: JSON.stringify(userData.email) });
 
-    return userData;
+    return user;
   } catch (error) {
     console.log(error);
     throw error;

@@ -26,14 +26,18 @@ export const getLoginStatus = async (): Promise<getLoginSessionProps | null> => 
     }
   };
 
-export const saveLoginSession = async ({session}:any): Promise<void> => {
+export const saveLoginSession = async (session:any): Promise<void> => {
   try {
-    console.log(`Save Login Session Data ----=>----${JSON.stringify(session)}`);
+    console.log(`Save Login Session Data ----=>=>=>=>----${JSON.stringify(session)}`);
+    console.log(`Save Login Session Data ----=>=>----${session}`);
+
+    if(session !=null && session != undefined){
+
+      await AsyncStorage.setItem("session", JSON.stringify(session));
+      console.log("Login Data Save was  Success in local Database");
+    }
 
 
-    await AsyncStorage.setItem("session", JSON.stringify(session));
-
-    console.log("Login Data Save was  Success in local Database");
   } catch (error) {
     console.log(`Save Login Session in saveLoginSession Error :-${error}`);
     throw error;
