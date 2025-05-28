@@ -1,11 +1,13 @@
-import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
-import React from "react";
-import { useLocalSearchParams, useSearchParams } from "expo-router/build/hooks";
-import useFetch from "@/services/useFetch";
-import { fetchMovieDetails } from "@/services/api";
 import { icons } from "@/constants/icons";
+import { fetchMovieDetails } from "@/services/api";
+import useFetch from "@/services/useFetch";
+import { getTheMovie, saveMovie } from "@/store/movieSlice";
+import { AppDispatch, RootState } from "@/store/store";
 import { router } from "expo-router";
-import { saveTheMovie } from "@/services/appWrith";
+import { useLocalSearchParams } from "expo-router/build/hooks";
+import React from "react";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 
 interface MovieInfoProps {
   label: string;
@@ -23,6 +25,11 @@ const MovieInfo = ({ label, value }: MovieInfoProps) => {
 
 const Details = () => {
   const { id } = useLocalSearchParams();
+  const dispatch = useDispatch<AppDispatch>();
+  const { saveMovieLoading, saveMovieError } = useSelector(
+    (state: RootState) => state.movie
+  );
+  const { userID } = useSelector((state: RootState) => state.auth);
 
   const { data: movie, loading } = useFetch(() =>
     fetchMovieDetails(id as string)
@@ -51,8 +58,20 @@ const Details = () => {
         <View className="flex-col items-start justify-center mt-5 px-5">
           <View className="flex-row  justify-between w-full">
             <Text className="text-white font-bold text-xl">{movie?.title}</Text>
-            <TouchableOpacity onPress={() => saveTheMovie(movie!)}>
-              <Image source={icons.save} tintColor="blue" />
+            <TouchableOpacity
+              onPress={async() => {
+
+                try {
+                 await dispatch(saveMovie({ movie: movie!, userID: userID! }))
+                 await dispatch(getTheMovie(userID!))
+                  
+                } catch (error) {
+                        console.log("Failed to save and refresh:", error);
+
+                }
+              }}
+            >
+              <Image source={icons.save} tintColor="white" />
             </TouchableOpacity>
           </View>
           <View className="flex-row items-center gap-x-1 mt-2">

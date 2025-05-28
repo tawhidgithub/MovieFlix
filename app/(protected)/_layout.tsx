@@ -7,7 +7,7 @@ import { AppDispatch, RootState } from "../../store/store";
 
 export default function ProtectedLayout() {
   const dispatch = useDispatch<AppDispatch>();
-  const { isLoggedIn, checkIsLoginIsLoading, checkIsLoginError } = useSelector(
+  const { isLoggedIn, checkIsLoginIsLoading, checkIsLoginError ,userID } = useSelector(
     (state: RootState) => state.auth
   );
 
@@ -30,6 +30,7 @@ console.log(`Error checking in login Error =>${checkIsLoginError}`);
 
   // After loading, handle login check
   if (!isLoggedIn) {
+
     console.log(`isLogIn (after loading): ${isLoggedIn}`);
     return <Redirect href="/loginScreen" />;
   }

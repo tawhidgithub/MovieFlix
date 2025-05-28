@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./authSlice";
+import movieReducer from "./movieSlice";
 import userReducer from "./userSlice";
 
 
@@ -8,7 +9,8 @@ import userReducer from "./userSlice";
 reducer:{
 
     auth:authReducer,
-    user:userReducer
+    user:userReducer,
+    movie:movieReducer
 
 }
 

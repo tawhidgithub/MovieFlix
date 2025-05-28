@@ -10,6 +10,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 /// Initial state
 
 interface AuthState {
+  userID:string|null,
   isLoggedIn: boolean;
   checkIsLoginIsLoading: boolean;
   checkIsLoginError: string | null;
@@ -25,6 +26,7 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
+  userID:null,
   isLoggedIn: false,
   checkIsLoginIsLoading: false,
   checkIsLoginError: null,
@@ -41,10 +43,7 @@ const initialState: AuthState = {
 
 // Thunk to check Login
 
-export const checkLogin = createAsyncThunk("auth/checkLogin", async () => {
-  const session = await getLoginSession();
-  return !!session?.userId;
-});
+
 
 interface LoginProps {
   Email: string;
@@ -87,22 +86,19 @@ export const checkIsLogin = createAsyncThunk("auth/checkIsLogin", async () => {
   const session = await getLoginSession();
   console.log("Session in checkIsLogin thunk:", session);
 
-  const isLogin = !!session?.userId;
+  // const isLogin = !!session?.userId;
 
-  console.log(`---------checkIsLogin-------isLogin=> ${isLogin}`);
+  // console.log(`---------checkIsLogin-------isLogin=> ${isLogin}`);
 
-  return isLogin;
+  return session;
 });
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(checkLogin.fulfilled, (state, action) => {
-        state.isLoggedIn = action.payload;
-      })
-      .addCase(login.pending, (state) => {
+    builder.addCase(login.pending, (state) => {
         // eslint-disable-next-line no-unused-expressions
         (state.loginLoading = true), (state.loginError = null);
       })
@@ -132,7 +128,17 @@ const authSlice = createSlice({
       })
       .addCase(checkIsLogin.fulfilled, (state, action) => {
         state.checkIsLoginIsLoading = false;
-        state.isLoggedIn = action.payload;
+        if(action.payload?.userId){
+
+                  state.isLoggedIn = true;
+                  state.userID=action.payload.userId;
+                    console.log(`==============>==========>UserID:->${state.userID}`);
+
+                  
+
+        }else{
+                  state.isLoggedIn = false
+        }
         console.log(`is Login----------authSlice-------- ${state.isLoggedIn} `);
       })
       .addCase(checkIsLogin.pending, (state) => {

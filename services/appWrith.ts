@@ -59,7 +59,7 @@ export const getTrendingMovies = async (): Promise<
   }
 };
 // save the movie in Database
-export const saveTheMovie = async (movie: MovieDetails) => {
+export const saveTheMovie = async ({movie,userId}:{movie:MovieDetails,userId:string}) => {
   try {
     console.log(
       `Image path =>:https://image.tmdb.org/t/p/w500${movie.poster_path}`
@@ -70,6 +70,7 @@ export const saveTheMovie = async (movie: MovieDetails) => {
       COLLECTION_SAVE_MOVIE_ID,
       ID.unique(),
       {
+        userId: userId,
         title: movie.title!,
         poster_path: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
         type: "Movie",
@@ -86,11 +87,15 @@ export const saveTheMovie = async (movie: MovieDetails) => {
   }
 };
 // get the saved movie from Database
-export const getTheSaveMovie = async () => {
+export const getTheSaveMovie = async (userID:string) => {
   try {
     const result = await database.listDocuments(
       DATABASE_ID,
-      COLLECTION_SAVE_MOVIE_ID
+      COLLECTION_SAVE_MOVIE_ID,
+       [
+    Query.equal("userId", userID)
+  ]
+
     );
 
     console.log(`------------${result}`);

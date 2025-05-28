@@ -29,23 +29,15 @@ const initialState: UserState = {
   userDetailsError: null,
 };
 
-
-
-const cleanQuotes =(str:string |null |undefined):string =>{
-
-
-if(!str){return "" }
-if(str.startsWith('"') && str.endsWith('"')){
-
-
-return str.slice(1,-1)
-
-}
-return str;
-
-
-}
-
+const cleanQuotes = (str: string | null | undefined): string => {
+  if (!str) {
+    return "";
+  }
+  if (str.startsWith('"') && str.endsWith('"')) {
+    return str.slice(1, -1);
+  }
+  return str;
+};
 
 const userSlice = createSlice({
   name: "user",
@@ -64,13 +56,14 @@ const userSlice = createSlice({
         state.userDetailsLoading = true;
       })
       .addCase(getUserDetails.fulfilled, (state, action) => {
-        const userData = action.payload
-        if(userData){
-state.userDetails ={
-    ...userData,name:cleanQuotes(userData.name),
-    email:cleanQuotes(userData.email)
-}
-
+        const userData = action.payload;
+        
+        if (userData) {
+          state.userDetails = {
+            ...userData,
+            name: cleanQuotes(userData.name),
+            email: cleanQuotes(userData.email),
+          };
         }
         state.userDetailsLoading = false;
       })
